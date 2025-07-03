@@ -41,8 +41,6 @@ function App() {
   const [crmImplementationCost, setCrmImplementationCost] = useState(150000)
   const [annualCrmLicense, setAnnualCrmLicense] = useState(60000)
   const [devHourlyRate, setDevHourlyRate] = useState(75)
-  const [salesHourlyRate, setSalesHourlyRate] = useState(35)
-  const [matchmakerHourlyRate, setMatchmakerHourlyRate] = useState(40)
   const [adminHourlyRate, setAdminHourlyRate] = useState(25)
   const [trainingCostDay, setTrainingCostDay] = useState(500)
 
@@ -57,16 +55,12 @@ function App() {
   const [currentUpsellingRate, setCurrentUpsellingRate] = useState(5)
   const [currentAdminEfficiency, setCurrentAdminEfficiency] = useState(70)
   const [currentErrorRate, setCurrentErrorRate] = useState(3)
-  const [currentSalesProductivity, setCurrentSalesProductivity] = useState(75)
-  const [currentMatchmakerProductivity, setCurrentMatchmakerProductivity] = useState(70)
 
   // Additional Business Metrics
   const [retentionImprovement, setRetentionImprovement] = useState(2)
   const [upsellingRate, setUpsellingRate] = useState(8)
   const [adminEfficiencyRate, setAdminEfficiencyRate] = useState(3.3)
   const [errorReductionRate, setErrorReductionRate] = useState(1)
-  const [salesProductivityRate, setSalesProductivityRate] = useState(15)
-  const [matchmakerProductivityRate, setMatchmakerProductivityRate] = useState(12)
 
   // Forecasted Improvements
   const [onboardingTimeReduction, setOnboardingTimeReduction] = useState(40) // % reduction
@@ -209,8 +203,6 @@ function App() {
     setUpsellingRate(0)
     setAdminEfficiencyRate(0)
     setErrorReductionRate(0)
-    setSalesProductivityRate(0)
-    setMatchmakerProductivityRate(0)
   }
 
   // Reset all forecasted improvements to 0
@@ -235,16 +227,14 @@ function App() {
       duplicateRate, resolutionTime, canopyCost, dropboxCost, esignCost,
       capacityIncrease, revenuePerClient, docHandlingHours, docAdminRate, docRiskBuffer,
       // Cost Parameters
-      crmImplementationCost, annualCrmLicense, devHourlyRate, salesHourlyRate,
-      matchmakerHourlyRate, adminHourlyRate, trainingCostDay,
+      crmImplementationCost, annualCrmLicense, devHourlyRate, adminHourlyRate, trainingCostDay,
       // Target Improvements
       targetConversionRate, targetResponseTime, targetDevHoursWeek, targetTrainingDays,
       // Current Metrics
       currentRetentionRate, currentUpsellingRate, currentAdminEfficiency,
-      currentErrorRate, currentSalesProductivity, currentMatchmakerProductivity,
+      currentErrorRate,
       // Additional Business Metrics
       retentionImprovement, upsellingRate, adminEfficiencyRate, errorReductionRate,
-      salesProductivityRate, matchmakerProductivityRate,
       // Forecasted Improvements
       onboardingTimeReduction, duplicateRateReduction, resolutionTimeReduction,
       canopyCostReduction, dropboxCostReduction, esignCostReduction,
@@ -282,8 +272,6 @@ function App() {
       setCrmImplementationCost(saved.crmImplementationCost || 150000);
       setAnnualCrmLicense(saved.annualCrmLicense || 60000);
       setDevHourlyRate(saved.devHourlyRate || 75);
-      setSalesHourlyRate(saved.salesHourlyRate || 35);
-      setMatchmakerHourlyRate(saved.matchmakerHourlyRate || 40);
       setAdminHourlyRate(saved.adminHourlyRate || 25);
       setTrainingCostDay(saved.trainingCostDay || 500);
       // Target Improvements
@@ -296,15 +284,11 @@ function App() {
       setCurrentUpsellingRate(saved.currentUpsellingRate || 5);
       setCurrentAdminEfficiency(saved.currentAdminEfficiency || 70);
       setCurrentErrorRate(saved.currentErrorRate || 3);
-      setCurrentSalesProductivity(saved.currentSalesProductivity || 75);
-      setCurrentMatchmakerProductivity(saved.currentMatchmakerProductivity || 70);
       // Additional Business Metrics
       setRetentionImprovement(saved.retentionImprovement || 2);
       setUpsellingRate(saved.upsellingRate || 8);
       setAdminEfficiencyRate(saved.adminEfficiencyRate || 3.3);
       setErrorReductionRate(saved.errorReductionRate || 1);
-      setSalesProductivityRate(saved.salesProductivityRate || 15);
-      setMatchmakerProductivityRate(saved.matchmakerProductivityRate || 12);
       // Forecasted Improvements
       setOnboardingTimeReduction(saved.onboardingTimeReduction || 50);
       setDuplicateRateReduction(saved.duplicateRateReduction || 60);
@@ -369,6 +353,8 @@ function App() {
         ['Document Handling & Risk Avoidance', `$${formatCurrency(results.docHandlingBenefit)}`],
         ['Total Annual Savings', `$${formatCurrency(results.totalAnnualSavings)}`],
         ['Revenue Enablement', `$${formatCurrency(results.revenueEnablement)}`],
+        ['Retention Revenue', `$${formatCurrency(results.retentionRevenue)}`],
+        ['Upsell Revenue', `$${formatCurrency(results.upsellRevenue)}`],
         ['Total Annual Benefits', `$${formatCurrency(results.totalAnnualBenefits)}`],
         ['Total Annual Costs', `$${formatCurrency(results.totalAnnualCosts)}`],
         ['Payback Period', `${results.paybackPeriod.toFixed(1)} months`],
@@ -416,6 +402,10 @@ function App() {
     // Revenue Enablement - Additional revenue from increased capacity
     const revenueEnablement = (clientsPerYear * (capacityIncrease / 100)) * revenuePerClient;
     
+    // New Revenue Streams - Retention and Upsell improvements
+    const retentionRevenue = clientsPerYear * revenuePerClient * (retentionImprovement / 100);
+    const upsellRevenue    = clientsPerYear * revenuePerClient * (upsellingRate / 100);
+    
     // Document Handling & Risk Avoidance - Savings from better document management
     // Separate the two components for clarity
     const docHandlingSavings = (docHandlingHours - forecastedDocHandlingHours) * docAdminRate;
@@ -423,7 +413,7 @@ function App() {
     const docHandlingBenefit = docHandlingSavings + riskBufferSavings;
     
     // Total Annual Benefits (savings + new revenue)
-    const totalAnnualBenefits = laborEfficiency + errorReduction + softwareConsolidation + docHandlingBenefit + revenueEnablement;
+    const totalAnnualBenefits = laborEfficiency + errorReduction + softwareConsolidation + docHandlingBenefit + revenueEnablement + retentionRevenue + upsellRevenue;
     
     // Total Annual Savings (cost reductions only, excluding new revenue)
     const totalAnnualSavings = laborEfficiency + errorReduction + softwareConsolidation + docHandlingBenefit;
@@ -455,6 +445,8 @@ function App() {
       errorReduction,
       softwareConsolidation,
       revenueEnablement,
+      retentionRevenue,
+      upsellRevenue,
       docHandlingBenefit,
       totalAnnualSavings,
       totalAnnualBenefits,
@@ -578,8 +570,6 @@ function App() {
       setCrmImplementationCost(saved.crmImplementationCost || 150000);
       setAnnualCrmLicense(saved.annualCrmLicense || 60000);
       setDevHourlyRate(saved.devHourlyRate || 75);
-      setSalesHourlyRate(saved.salesHourlyRate || 35);
-      setMatchmakerHourlyRate(saved.matchmakerHourlyRate || 40);
       setAdminHourlyRate(saved.adminHourlyRate || 25);
       setTrainingCostDay(saved.trainingCostDay || 500);
       // Target Improvements
@@ -592,15 +582,11 @@ function App() {
       setCurrentUpsellingRate(saved.currentUpsellingRate || 5);
       setCurrentAdminEfficiency(saved.currentAdminEfficiency || 70);
       setCurrentErrorRate(saved.currentErrorRate || 3);
-      setCurrentSalesProductivity(saved.currentSalesProductivity || 75);
-      setCurrentMatchmakerProductivity(saved.currentMatchmakerProductivity || 70);
       // Additional Business Metrics
       setRetentionImprovement(saved.retentionImprovement || 2);
       setUpsellingRate(saved.upsellingRate || 8);
       setAdminEfficiencyRate(saved.adminEfficiencyRate || 3.3);
       setErrorReductionRate(saved.errorReductionRate || 1);
-      setSalesProductivityRate(saved.salesProductivityRate || 15);
-      setMatchmakerProductivityRate(saved.matchmakerProductivityRate || 12);
       // Forecasted Improvements
       setOnboardingTimeReduction(saved.onboardingTimeReduction || 50);
       setDuplicateRateReduction(saved.duplicateRateReduction || 60);
@@ -1836,6 +1822,8 @@ function App() {
                             { name: 'Error Reduction', value: results.errorReduction, color: '#04DFC6' },
                             { name: 'Software Consolidation', value: results.softwareConsolidation, color: '#B2F000' },
                             { name: 'Revenue Enablement', value: results.revenueEnablement, color: '#168CA6' },
+                            { name: 'Retention Revenue', value: results.retentionRevenue, color: '#FFB347' },
+                            { name: 'Upsell Revenue', value: results.upsellRevenue, color: '#FF6B6B' },
                             { name: 'Doc Handling & Risk', value: results.docHandlingBenefit, color: '#FFB347' }
                           ]}
                           margin={{ top: 20, right: 30, left: 20, bottom: 40 }}
@@ -1878,6 +1866,12 @@ function App() {
                             )}
                             {results.revenueEnablement > 0 && (
                               <Cell fill="#168CA6" />
+                            )}
+                            {results.retentionRevenue > 0 && (
+                              <Cell fill="#FFB347" />
+                            )}
+                            {results.upsellRevenue > 0 && (
+                              <Cell fill="#FF6B6B" />
                             )}
                             {results.docHandlingBenefit > 0 && (
                               <Cell fill="#FFB347" />
