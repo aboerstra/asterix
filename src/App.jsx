@@ -213,6 +213,18 @@ function App() {
     setMatchmakerProductivityRate(0)
   }
 
+  // Reset all forecasted improvements to 0
+  const resetForecastedImprovements = () => {
+    setOnboardingTimeReduction(0)
+    setDuplicateRateReduction(0)
+    setResolutionTimeReduction(0)
+    setCanopyCostReduction(0)
+    setDropboxCostReduction(0)
+    setEsignCostReduction(0)
+    setDocHandlingHoursReduction(0)
+    setDocRiskBufferReduction(0)
+  }
+
   // Save scenario with a custom name
   const saveCurrentScenario = (name) => {
     if (!name) return;
@@ -1157,6 +1169,20 @@ function App() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="pt-6">
+                {/* Zero Out Button */}
+                <div className="mb-6 flex justify-end">
+                  <button
+                    onClick={resetForecastedImprovements}
+                    className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-md text-sm font-medium transition-colors duration-200 flex items-center gap-2"
+                    title="Reset all forecasted improvements to 0"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                    Zero Out Improvements
+                  </button>
+                </div>
+
                 {/* Process Efficiency Improvements */}
                 <div className="mb-8">
                   <h3 className="text-lg font-semibold mb-4" style={{color: '#FFB347'}}>Process Efficiency Improvements</h3>
