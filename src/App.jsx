@@ -223,6 +223,7 @@ function App() {
     setEsignCostReduction(0)
     setDocHandlingHoursReduction(0)
     setDocRiskBufferReduction(0)
+    setCapacityIncrease(0)
   }
 
   // Save scenario with a custom name
